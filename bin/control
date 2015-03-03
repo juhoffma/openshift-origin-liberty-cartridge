@@ -97,7 +97,7 @@ function deploy() {
 
 function is_running {
   echo '>>> Processing action "IS_RUNNING"...'
-  pidfile=${OPENSHIFT_LIBERTY_PROFILE}/logs/${OPENSHIFT_LIBERTY_SERVERNAME}/${OPENSHIFT_LIBERTY_SERVERNAME}.pid
+  pidfile="${OPENSHIFT_DATA_DIR}/liberty.pid"
 
   if [ -f $pidfile ]; then
     pid=`cat $pidfile 2> /dev/null`
@@ -114,20 +114,22 @@ function is_running {
 function start {
   echo '>>> Processing action "START"...'
   if ! is_running; then
-    echo "Starting ${OPENSHIFT_LIBERTY_SERVERNAME} using: startServer.sh ${OPENSHIFT_LIBERTY_SERVERNAME}"
-    ${OPENSHIFT_LIBERTY_PROFILE}/bin/startServer.sh ${OPENSHIFT_LIBERTY_SERVERNAME}
+    echo "Starting WebSphere Liberty Profile using: ${OPENSHIFT_LIBERTY_BIN_DIR}/server start ${OPENSHIFT_LIBERTY_SERVERNAME}"
+    ${OPENSHIFT_LIBERTY_BIN_DIR}/server start ${OPENSHIFT_LIBERTY_SERVERNAME}
+
+    echo $! > ${OPENSHIFT_DATA_DIR}/liberty.pid
 
     # Trigger initial deployment after profile creation
     touch -cf $OPENSHIFT_LIBERTY_DEPLOYMENT_DIR/ROOT.war
   else
-    echo "Websphere already running." 1>&2
+    echo "WebSphere Liberty already running." 1>&2
   fi
 }
 
 function stop {
   echo '>>> Processing action "STOP"...'
   if is_running; then
-    pidfile=${OPENSHIFT_LIBERTY_PROFILE}/logs/${OPENSHIFT_LIBERTY_SERVERNAME}/${OPENSHIFT_LIBERTY_SERVERNAME}.pid
+    pidfile="${OPENSHIFT_DATA_DIR}/liberty.pid"
 
     if [ -f $pidfile ]; then
       pid=$( /bin/cat $pidfile )
@@ -144,7 +146,7 @@ function stop {
         done
       fi
     else
-      echo "Websphere already stopped." 1>&2
+      echo "WebSphere Liberty already stopped." 1>&2
     fi
   fi
 }

@@ -87,8 +87,9 @@ echo "$hot_deployment_dir" > ${OPENSHIFT_LIBERTY_DIR}/env/OPENSHIFT_LIBERTY_DEPL
 
 
 # Setup logging
-#ln -s ${OPENSHIFT_DATA_DIR}/profile/logs/${servername}/SystemOut.log ${OPENSHIFT_LOG_DIR}/SystemOut.log
-#ln -s ${OPENSHIFT_DATA_DIR}/profile/logs/${servername}/SystemErr.log ${OPENSHIFT_LOG_DIR}/SystemErr.log
+ln -s ${WLP_USER_DIR}/servers/${servername}/logs/console.log ${OPENSHIFT_LOG_DIR}/console.log
+ln -s ${WLP_USER_DIR}/servers/${servername}/logs/start.log ${OPENSHIFT_LOG_DIR}/start.log
+ln -s ${WLP_USER_DIR}/servers/${servername}/logs/messages.log ${OPENSHIFT_LOG_DIR}/messages.log
 
 # Prepare Build and Deploy for Sample Code
 OPENSHIFT_LIBERTY_MAVEN_DIR="${OPENSHIFT_DATA_DIR}/maven"

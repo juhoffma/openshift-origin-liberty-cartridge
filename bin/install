@@ -12,13 +12,22 @@ case "$1" in
     version="$2"
 esac
 
-OPENSHIFT_LIBERTY_INSTALL_DIR="${OPENSHIFT_LIBERTY_DIR}/versions/8.5.5.4/wlp"
+if [ ! -z $version ]; then
+    version="8.5.5.4"
+fi
+
+OPENSHIFT_LIBERTY_INSTALL_DIR="${OPENSHIFT_LIBERTY_DIR}/versions/${version}/wlp"
+OPENSHIFT_LIBERTY_BIN_DIR="${OPENSHIFT_LIBERTY_INSTALL_DIR}/bin"
+
 
 echo "$version" > "$OPENSHIFT_LIBERTY_DIR/env/OPENSHIFT_LIBERTY_VERSION"
+echo "${OPENSHIFT_LIBERTY_BIN_DIR}" > "$OPENSHIFT_LIBERTY_DIR/env/OPENSHIFT_LIBERTY_BIN_DIR"
 
 echo 'Generating username and password'
 
 servername="default_server"
+echo "${servername}" > "$OPENSHIFT_LIBERTY_DIR/env/OPENSHIFT_LIBERTY_SERVERNAME"
+
 admin_console_url="https://${OPENSHIFT_GEAR_DNS}:${OPENSHIFT_LIBERTY_WC_ADMINHOST_SECURE_PROXY_PORT}/ibm/console/logon.jsp"
 
 client_result ""
@@ -40,8 +49,8 @@ hot_deployment_dir="${OPENSHIFT_LIBERTY_INSTALL_DIR}/usr/servers/${servername}/d
 echo "$hot_deployment_dir" > ${OPENSHIFT_LIBERTY_DIR}/env/OPENSHIFT_LIBERTY_DEPLOYMENT_DIR
 
 # Setup logging
-ln -s ${OPENSHIFT_DATA_DIR}/profile/logs/${servername}/SystemOut.log ${OPENSHIFT_LOG_DIR}/SystemOut.log
-ln -s ${OPENSHIFT_DATA_DIR}/profile/logs/${servername}/SystemErr.log ${OPENSHIFT_LOG_DIR}/SystemErr.log
+#ln -s ${OPENSHIFT_DATA_DIR}/profile/logs/${servername}/SystemOut.log ${OPENSHIFT_LOG_DIR}/SystemOut.log
+#ln -s ${OPENSHIFT_DATA_DIR}/profile/logs/${servername}/SystemErr.log ${OPENSHIFT_LOG_DIR}/SystemErr.log
 
 # Prepare Build and Deploy for Sample Code
 OPENSHIFT_LIBERTY_MAVEN_DIR="${OPENSHIFT_DATA_DIR}/maven"

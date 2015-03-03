@@ -16,14 +16,20 @@ if [ ! -z $version ]; then
     version="8.5.5.4"
 fi
 
-OPENSHIFT_LIBERTY_INSTALL_DIR="${OPENSHIFT_LIBERTY_DIR}/versions/${version}/wlp"
+# You can override the usage of the specific version underneath the versions directory
+# by setting a node level variable and define the install location there.
+if [ ! -z $OPENSHIFT_LIBERTY_INSTALL_DIR ]; then
+    OPENSHIFT_LIBERTY_INSTALL_DIR="${OPENSHIFT_LIBERTY_DIR}/versions/${version}/wlp"
+fi
+
 OPENSHIFT_LIBERTY_BIN_DIR="${OPENSHIFT_LIBERTY_INSTALL_DIR}/bin"
 
+# Making sure we have existing output directories in the OPENSHIFT_DATA Directory location
+# See env/WLP_OUTPUT_DIR
+mkdir ${WLP_OUTPUT_DIR}
 
 echo "$version" > "$OPENSHIFT_LIBERTY_DIR/env/OPENSHIFT_LIBERTY_VERSION"
 echo "${OPENSHIFT_LIBERTY_BIN_DIR}" > "$OPENSHIFT_LIBERTY_DIR/env/OPENSHIFT_LIBERTY_BIN_DIR"
-
-echo 'Generating username and password'
 
 servername="default_server"
 echo "${servername}" > "$OPENSHIFT_LIBERTY_DIR/env/OPENSHIFT_LIBERTY_SERVERNAME"
@@ -31,7 +37,7 @@ echo "${servername}" > "$OPENSHIFT_LIBERTY_DIR/env/OPENSHIFT_LIBERTY_SERVERNAME"
 admin_console_url="https://${OPENSHIFT_GEAR_DNS}:${OPENSHIFT_LIBERTY_WC_ADMINHOST_SECURE_PROXY_PORT}/ibm/console/logon.jsp"
 
 client_result ""
-client_result "Liberty version: ${version} created.  Please make note of these Administrative User credentials:"
+client_result "Liberty version: ${version} created."
 client_result ""
 
 directory_structure=$(ls -laR ${OPENSHIFT_LIBERTY_DIR})

@@ -3,6 +3,8 @@ source $OPENSHIFT_CARTRIDGE_SDK_BASH
 export PATH=${OPENSHIFT_LIBERTY_PROFILE}/bin:$PATH
 export STOPTIMEOUT=10
 
+
+
 function build() {
   echo '>>> Processing action "BUILD"...'
   echo "Building $cartridge_type cartridge..."
@@ -97,7 +99,7 @@ function deploy() {
 
 function is_running {
   echo '>>> Processing action "IS_RUNNING"...'
-  pidfile="${OPENSHIFT_DATA_DIR}/liberty.pid"
+  pidfile="${PID_FILE}"
 
   if [ -f $pidfile ]; then
     pid=`cat $pidfile 2> /dev/null`
@@ -116,8 +118,6 @@ function start {
   if ! is_running; then
     echo "Starting WebSphere Liberty Profile using: ${OPENSHIFT_LIBERTY_BIN_DIR}/server start ${OPENSHIFT_LIBERTY_SERVERNAME}"
     ${OPENSHIFT_LIBERTY_BIN_DIR}/server start ${OPENSHIFT_LIBERTY_SERVERNAME}
-
-    echo $! > ${OPENSHIFT_DATA_DIR}/liberty.pid
 
     # Trigger initial deployment after profile creation
     touch -cf $OPENSHIFT_LIBERTY_DEPLOYMENT_DIR/ROOT.war

@@ -50,7 +50,7 @@ echo '######################################################################'
 create_result=$(${OPENSHIFT_LIBERTY_INSTALL_DIR}/bin/server create ${servername})
 
 # Create Hot Deployment Dir
-hot_deployment_dir="${WLP_USER_DIR}/servers/${servername}/dropins"
+hot_deployment_dir="${WLP_USER_DIR}/servers/${servername}/apps"
 # mkdir -p $hot_deployment_dir
 echo "$hot_deployment_dir" > ${OPENSHIFT_LIBERTY_DIR}/env/OPENSHIFT_LIBERTY_DEPLOYMENT_DIR
 

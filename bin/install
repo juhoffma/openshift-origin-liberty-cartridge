@@ -4,7 +4,10 @@ echo '######################################################################'
 echo '# INSTALL                                                            #'
 echo '######################################################################'
 echo ''
+
 source $OPENSHIFT_CARTRIDGE_SDK_BASH
+
+OPENSHIFT_LIBERTY_INSTALL_DIR="${OPENSHIFT_LIBERTY_DIR}/wlp"
 
 case "$1" in
   -v|--version)
@@ -15,40 +18,19 @@ echo "$version" > "$OPENSHIFT_LIBERTY_DIR/env/OPENSHIFT_LIBERTY_VERSION"
 
 echo 'Generating username and password'
 
-servername="server1"
-username="admin"
-password=$(generate_password)
+servername="default_server"
 admin_console_url="https://${OPENSHIFT_GEAR_DNS}:${OPENSHIFT_LIBERTY_WC_ADMINHOST_SECURE_PROXY_PORT}/ibm/console/logon.jsp"
 
-echo "$username" > ${OPENSHIFT_LIBERTY_DIR}/env/OPENSHIFT_LIBERTY_ADMIN_USERNAME
-echo "$password" > ${OPENSHIFT_LIBERTY_DIR}/env/OPENSHIFT_LIBERTY_ADMIN_PASSWORD
-echo "$admin_console_url" > ${OPENSHIFT_LIBERTY_DIR}/env/OPENSHIFT_LIBERTY_ADMIN_CONSOLE_URL
-
 client_result ""
-client_result "Websphere version: ${version} created.  Please make note of these Administrative User credentials:"
-client_result ""
-client_result "       Username: $username"
-client_result "       Password: $password"
-client_result "       Admin Console: $admin_console_url"
-client_result ""
+client_result "Liberty version: ${version} created.  Please make note of these Administrative User credentials:"
 client_result ""
 
-echo "${OPENSHIFT_DATA_DIR}/profile" > ${OPENSHIFT_LIBERTY_DIR}/env/OPENSHIFT_LIBERTY_PROFILE
-echo "$servername" > ${OPENSHIFT_LIBERTY_DIR}/env/OPENSHIFT_LIBERTY_SERVERNAME
-
-# Create softlink to Liberty binary installation
-ln -s ${OPENSHIFT_LIBERTY_INSTALL_LOCATION} ${OPENSHIFT_LIBERTY_DIR}/install
-
-# Create Liberty Profile
-log_manageprofiles_result=`${OPENSHIFT_LIBERTY_DIR}/install/bin/manageprofiles.sh -create -profileName ${OPENSHIFT_GEAR_UUID} -profilePath ${OPENSHIFT_DATA_DIR}/profile -templatePath ${OPENSHIFT_LIBERTY_INSTALL_LOCATION}/profileTemplates/default/ -enableAdminSecurity true -serverName ${servername} -adminUserName ${username} -adminPassword ${password} -hostName ${OPENSHIFT_LIBERTY_IP} -applyPerfTuningSetting development -defaultPorts -cellName OpenShiftCell -nodeName OpenShiftNode01 -omitAction deployIVTApplication defaultAppDeployAndConfig`
-log_manageprofiles_abouthisprofile=`cat ${OPENSHIFT_DATA_DIR}/profile/logs/AboutThisProfile.txt`
-
-# Customize Liberty Profile
-${OPENSHIFT_DATA_DIR}/profile/bin/wsadmin.sh -lang jython -conntype NONE -f ${OPENSHIFT_LIBERTY_DIR}/usr/wsadmin_customizeLibertyProfile.py ${OPENSHIFT_GEAR_DNS} ${OPENSHIFT_LIBERTY_IP}
+# Create the Server Profile
+create_result=$(${OPENSHIFT_LIBERTY_INSTALL_DIR}/bin/server create ${servername})
 
 # Create Hot Deployment Dir
-hot_deployment_dir="${OPENSHIFT_DATA_DIR}/profile/monitoredDeployableApps/servers/${servername}"
-mkdir -p $hot_deployment_dir
+hot_deployment_dir="${OPENSHIFT_LIBERTY_INSTALL_DIR}/usr/servers/${servername}/dropins"
+# mkdir -p $hot_deployment_dir
 echo "$hot_deployment_dir" > ${OPENSHIFT_LIBERTY_DIR}/env/OPENSHIFT_LIBERTY_DEPLOYMENT_DIR
 
 # Setup logging
@@ -74,9 +56,7 @@ popd 1> /dev/null
 
 # Finalize
 client_result "######################################################################"
-client_result "$log_manageprofiles_result"
-client_result "######################################################################"
-client_result "$log_manageprofiles_abouthisprofile"
+client_result "${create_result}"
 client_result "######################################################################"
 
 echo ''

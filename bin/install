@@ -50,7 +50,7 @@ echo '######################################################################'
 create_result=$(${OPENSHIFT_LIBERTY_INSTALL_DIR}/bin/server create ${servername})
 
 # Generate the bootstrap properties to be used
-cat > ${WLP_USER_DIR}/servers/default_server/server.xml << EOF
+cat > ${WLP_USER_DIR}/servers/default_server/bootstrap.properties << EOF
 default.host=${OPENSHIFT_LIBERTY_IP}
 default.http.port=${OPENSHIFT_LIBERTY_WC_DEFAULTHOST_PORT}
 default.https.port=${OPENSHIFT_LIBERTY_WC_DEFAULTHOST_SECURE_PORT}

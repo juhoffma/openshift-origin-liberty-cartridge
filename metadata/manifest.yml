@@ -1,11 +1,11 @@
 ---
 Name: liberty
 Cartridge-Short-Name: LIBERTY
-Display-Name: IBM Liberty Application Server for Developers
-Description: IBM Liberty Application Server for Developers provides access to the development runtime when production runtime capabilities matter. It is a no-charge development runtime. This software helps to enable faster, more efficient development of applications and services, and is available without the expense of a priced and supported runtime on the developer’s desktop.
+Display-Name: IBM WebSphere Application Server Liberty Core
+Description: IBM WebSphere Application Server Liberty Core is a lightweight and dynamic application server based on the developer-friendly Liberty profile. Designed for web applications that do not require a full Java EE stack, this WebSphere solution is certified to the Java EE 6 Web Profile specification.The capabilities available in the Liberty Core edition are a subset of the Liberty profile features provided in other editions of WebSphere Application Server.
 Version: '8.5.5.4'
 License: Commercial
-License-Url: http://www-03.ibm.com/software/products/en/appserv-wasfordev/
+License-Url: http://www.ibm.com/developerworks/downloads/ws/liberty/
 Vendor: hoffmann
 Cartridge-Version: 0.0.1
 Compatible-Versions: []
@@ -17,7 +17,7 @@ Categories:
 - ibm
 - java_ee_6
 - was
-Website: http://www-03.ibm.com/software/products/en/appserv-wasfordev/
+Website: http://www.ibm.com/developerworks/downloads/ws/liberty/
 Help-Topics:
   Developer Center: https://www.openshift.com/developers
 Provides:

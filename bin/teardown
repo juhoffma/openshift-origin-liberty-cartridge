@@ -6,6 +6,3 @@ case "$1" in
   -v|--version)
     version="$2"
 esac
-
-
-${OPENSHIFT_LIBERTY_DIR}/install/bin/manageprofiles.sh -delete -profileName ${OPENSHIFT_GEAR_UUID} 

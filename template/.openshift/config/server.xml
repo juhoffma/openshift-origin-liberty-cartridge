@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="${default.dns.name}">
+
+    <!-- Enable features -->
+    <featureManager>
+        <feature>jsp-2.2</feature>
+    </featureManager>
+
+    <!-- To access this server from a remote client add a host attribute to the following element, e.g. host="*" -->
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="${default.host}"
+                  httpPort="${default.http.port}"
+                  httpsPort="${default.https.port}" />
+
+    <application context-root="/" type="war" id="root"
+                 location="ROOT.war" name="root"/>
+
+</server>

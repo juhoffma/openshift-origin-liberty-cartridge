@@ -3,6 +3,7 @@ source $OPENSHIFT_CARTRIDGE_SDK_BASH
 export PATH=${OPENSHIFT_LIBERTY_PROFILE}/bin:$PATH
 export STOPTIMEOUT=10
 
+$cartridge_type="liberty"
 
 
 function build() {
@@ -115,6 +116,13 @@ function is_running {
 
 function start {
   echo '>>> Processing action "START"...'
+
+  if [ -f ${OPENSHIFT_REPO_DIR}/.openshift/config/server.xml ]; then
+    echo "Found a user defined server.xml in ${OPENSHIFT_REPO_DIR}/.openshift/config/server.xml"
+    echo "Overriding the default configuration using the users' definition"
+    cp ${OPENSHIFT_REPO_DIR}/.openshift/config/server.xml ${WLP_USER_DIR}/servers/${OPENSHIFT_LIBERTY_SERVERNAME}
+  fi
+
   if ! is_running; then
     echo "Starting WebSphere Liberty Profile using: ${OPENSHIFT_LIBERTY_BIN_DIR}/server start ${OPENSHIFT_LIBERTY_SERVERNAME}"
     ${OPENSHIFT_LIBERTY_BIN_DIR}/server start ${OPENSHIFT_LIBERTY_SERVERNAME}

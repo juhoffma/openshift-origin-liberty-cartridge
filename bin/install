@@ -12,13 +12,13 @@ case "$1" in
     version="$2"
 esac
 
-if [ ! -z $version ]; then
+if [ -z ${version+x} ]; then
     version="8.5.5.4"
 fi
 
 # You can override the usage of the specific version underneath the versions directory
 # by setting a node level variable and define the install location there.
-if [ ! -z $OPENSHIFT_LIBERTY_INSTALL_DIR ]; then
+if [ -z ${OPENSHIFT_LIBERTY_INSTALL_DIR+x} ]; then
     OPENSHIFT_LIBERTY_INSTALL_DIR="${OPENSHIFT_LIBERTY_DIR}/versions/${version}/wlp"
 fi
 
@@ -26,7 +26,7 @@ OPENSHIFT_LIBERTY_BIN_DIR="${OPENSHIFT_LIBERTY_INSTALL_DIR}/bin"
 
 # Making sure we have existing output directories in the OPENSHIFT_DATA Directory location
 # See env/WLP_OUTPUT_DIR
-mkdir ${WLP_OUTPUT_DIR}
+mkdir ${WLP_USER_DIR}
 
 echo "$version" > "$OPENSHIFT_LIBERTY_DIR/env/OPENSHIFT_LIBERTY_VERSION"
 echo "${OPENSHIFT_LIBERTY_BIN_DIR}" > "$OPENSHIFT_LIBERTY_DIR/env/OPENSHIFT_LIBERTY_BIN_DIR"
@@ -50,7 +50,7 @@ echo '######################################################################'
 create_result=$(${OPENSHIFT_LIBERTY_INSTALL_DIR}/bin/server create ${servername})
 
 # Create Hot Deployment Dir
-hot_deployment_dir="${OPENSHIFT_LIBERTY_INSTALL_DIR}/usr/servers/${servername}/dropins"
+hot_deployment_dir="${WLP_USER_DIR}/servers/${servername}/dropins"
 # mkdir -p $hot_deployment_dir
 echo "$hot_deployment_dir" > ${OPENSHIFT_LIBERTY_DIR}/env/OPENSHIFT_LIBERTY_DEPLOYMENT_DIR
 

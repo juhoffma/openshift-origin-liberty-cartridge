@@ -1,0 +1,85 @@
+#!/bin/bash -e
+echo ''
+echo '######################################################################'
+echo '# INSTALL                                                            #'
+echo '######################################################################'
+echo ''
+source $OPENSHIFT_CARTRIDGE_SDK_BASH
+
+case "$1" in
+  -v|--version)
+    version="$2"
+esac
+
+echo "$version" > "$OPENSHIFT_LIBERTY_DIR/env/OPENSHIFT_LIBERTY_VERSION"
+
+echo 'Generating username and password'
+
+servername="server1"
+username="admin"
+password=$(generate_password)
+admin_console_url="https://${OPENSHIFT_GEAR_DNS}:${OPENSHIFT_LIBERTY_WC_ADMINHOST_SECURE_PROXY_PORT}/ibm/console/logon.jsp"
+
+echo "$username" > ${OPENSHIFT_LIBERTY_DIR}/env/OPENSHIFT_LIBERTY_ADMIN_USERNAME
+echo "$password" > ${OPENSHIFT_LIBERTY_DIR}/env/OPENSHIFT_LIBERTY_ADMIN_PASSWORD
+echo "$admin_console_url" > ${OPENSHIFT_LIBERTY_DIR}/env/OPENSHIFT_LIBERTY_ADMIN_CONSOLE_URL
+
+client_result ""
+client_result "Websphere version: ${version} created.  Please make note of these Administrative User credentials:"
+client_result ""
+client_result "       Username: $username"
+client_result "       Password: $password"
+client_result "       Admin Console: $admin_console_url"
+client_result ""
+client_result ""
+
+echo "${OPENSHIFT_DATA_DIR}/profile" > ${OPENSHIFT_LIBERTY_DIR}/env/OPENSHIFT_LIBERTY_PROFILE
+echo "$servername" > ${OPENSHIFT_LIBERTY_DIR}/env/OPENSHIFT_LIBERTY_SERVERNAME
+
+# Create softlink to Liberty binary installation
+ln -s ${OPENSHIFT_LIBERTY_INSTALL_LOCATION} ${OPENSHIFT_LIBERTY_DIR}/install
+
+# Create Liberty Profile
+log_manageprofiles_result=`${OPENSHIFT_LIBERTY_DIR}/install/bin/manageprofiles.sh -create -profileName ${OPENSHIFT_GEAR_UUID} -profilePath ${OPENSHIFT_DATA_DIR}/profile -templatePath ${OPENSHIFT_LIBERTY_INSTALL_LOCATION}/profileTemplates/default/ -enableAdminSecurity true -serverName ${servername} -adminUserName ${username} -adminPassword ${password} -hostName ${OPENSHIFT_LIBERTY_IP} -applyPerfTuningSetting development -defaultPorts -cellName OpenShiftCell -nodeName OpenShiftNode01 -omitAction deployIVTApplication defaultAppDeployAndConfig`
+log_manageprofiles_abouthisprofile=`cat ${OPENSHIFT_DATA_DIR}/profile/logs/AboutThisProfile.txt`
+
+# Customize Liberty Profile
+${OPENSHIFT_DATA_DIR}/profile/bin/wsadmin.sh -lang jython -conntype NONE -f ${OPENSHIFT_LIBERTY_DIR}/usr/wsadmin_customizeLibertyProfile.py ${OPENSHIFT_GEAR_DNS} ${OPENSHIFT_LIBERTY_IP}
+
+# Create Hot Deployment Dir
+hot_deployment_dir="${OPENSHIFT_DATA_DIR}/profile/monitoredDeployableApps/servers/${servername}"
+mkdir -p $hot_deployment_dir
+echo "$hot_deployment_dir" > ${OPENSHIFT_LIBERTY_DIR}/env/OPENSHIFT_LIBERTY_DEPLOYMENT_DIR
+
+# Setup logging
+ln -s ${OPENSHIFT_DATA_DIR}/profile/logs/${servername}/SystemOut.log ${OPENSHIFT_LOG_DIR}/SystemOut.log
+ln -s ${OPENSHIFT_DATA_DIR}/profile/logs/${servername}/SystemErr.log ${OPENSHIFT_LOG_DIR}/SystemErr.log
+
+# Prepare Build and Deploy for Sample Code
+OPENSHIFT_LIBERTY_MAVEN_DIR="${OPENSHIFT_DATA_DIR}/maven"
+OPENSHIFT_LIBERTY_MAVEN_REPO_DIR="${OPENSHIFT_LIBERTY_MAVEN_DIR}/repository"
+mkdir ${OPENSHIFT_LIBERTY_MAVEN_DIR}
+mkdir ${OPENSHIFT_LIBERTY_MAVEN_REPO_DIR}
+cp ${OPENSHIFT_LIBERTY_DIR}/usr/settings.base.xml ${OPENSHIFT_LIBERTY_MAVEN_DIR}
+cp ${OPENSHIFT_LIBERTY_DIR}/usr/settings.rhcloud.xml ${OPENSHIFT_LIBERTY_MAVEN_DIR}
+sed -i "s|{MAVEN_REPO_PATH}|${OPENSHIFT_LIBERTY_MAVEN_REPO_DIR}|g" ${OPENSHIFT_LIBERTY_MAVEN_DIR}/settings.base.xml
+sed -i "s|{MAVEN_REPO_PATH}|${OPENSHIFT_LIBERTY_MAVEN_REPO_DIR}|g" ${OPENSHIFT_LIBERTY_MAVEN_DIR}/settings.rhcloud.xml
+sed -i "s/{APP_NAME}/${OPENSHIFT_APP_NAME}/g" ${OPENSHIFT_LIBERTY_DIR}/template/pom.xml
+sed -i "s|{LIBERTY_ADMIN_CONSOLE_URL}|${admin_console_url}|g" ${OPENSHIFT_LIBERTY_DIR}/template/src/main/webapp/index.html
+
+# Create initial deployment
+pushd ${OPENSHIFT_LIBERTY_DIR}/template/src/main/webapp 1>/dev/null
+jar cvf $hot_deployment_dir/ROOT.war ./*
+popd 1> /dev/null
+
+# Finalize
+client_result "######################################################################"
+client_result "$log_manageprofiles_result"
+client_result "######################################################################"
+client_result "$log_manageprofiles_abouthisprofile"
+client_result "######################################################################"
+
+echo ''
+echo '######################################################################'
+echo '######################################################################'
+echo ''

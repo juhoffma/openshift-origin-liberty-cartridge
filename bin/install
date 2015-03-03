@@ -7,12 +7,12 @@ echo ''
 
 source $OPENSHIFT_CARTRIDGE_SDK_BASH
 
-OPENSHIFT_LIBERTY_INSTALL_DIR="${OPENSHIFT_LIBERTY_DIR}/wlp"
-
 case "$1" in
   -v|--version)
     version="$2"
 esac
+
+OPENSHIFT_LIBERTY_INSTALL_DIR="${OPENSHIFT_LIBERTY_DIR}/versions/8.5.5.4/wlp"
 
 echo "$version" > "$OPENSHIFT_LIBERTY_DIR/env/OPENSHIFT_LIBERTY_VERSION"
 
@@ -24,6 +24,12 @@ admin_console_url="https://${OPENSHIFT_GEAR_DNS}:${OPENSHIFT_LIBERTY_WC_ADMINHOS
 client_result ""
 client_result "Liberty version: ${version} created.  Please make note of these Administrative User credentials:"
 client_result ""
+
+directory_structure=$(ls -laR ${OPENSHIFT_LIBERTY_DIR})
+
+echo '######################################################################'
+echo "${directory_structure}"
+echo '######################################################################'
 
 # Create the Server Profile
 create_result=$(${OPENSHIFT_LIBERTY_INSTALL_DIR}/bin/server create ${servername})

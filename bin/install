@@ -49,10 +49,42 @@ echo '######################################################################'
 # Create the Server Profile
 create_result=$(${OPENSHIFT_LIBERTY_INSTALL_DIR}/bin/server create ${servername})
 
+# Generate the bootstrap properties to be used
+cat > ${WLP_USER_DIR}/servers/default_server/server.xml << EOF
+default.host=${OPENSHIFT_LIBERTY_IP}
+default.http.port=${OPENSHIFT_LIBERTY_WC_DEFAULTHOST_PORT}
+default.https.port=${OPENSHIFT_LIBERTY_WC_DEFAULTHOST_SECURE_PORT}
+default.dns.name=${OPENSHIFT_GEAR_DNS}
+command.port=-1
+EOF
+
+# Generate the server.xml to be used
+cat > ${WLP_USER_DIR}/servers/default_server/server.xml << 'EOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="${default.dns.name}">
+
+    <!-- Enable features -->
+    <featureManager>
+        <feature>jsp-2.2</feature>
+    </featureManager>
+
+    <!-- To access this server from a remote client add a host attribute to the following element, e.g. host="*" -->
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="${default.host}"
+                  httpPort="${default.http.port}"
+                  httpsPort="${default.https.port}" />
+
+    <application context-root="/" type="war" id="root"
+                 location="ROOT.war" name="root"/>
+
+</server>
+EOF
+
 # Create Hot Deployment Dir
 hot_deployment_dir="${WLP_USER_DIR}/servers/${servername}/apps"
 # mkdir -p $hot_deployment_dir
 echo "$hot_deployment_dir" > ${OPENSHIFT_LIBERTY_DIR}/env/OPENSHIFT_LIBERTY_DEPLOYMENT_DIR
+
 
 # Setup logging
 #ln -s ${OPENSHIFT_DATA_DIR}/profile/logs/${servername}/SystemOut.log ${OPENSHIFT_LOG_DIR}/SystemOut.log

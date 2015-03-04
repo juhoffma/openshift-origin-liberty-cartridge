@@ -124,13 +124,13 @@ function start {
   fi
 
   if ! is_running; then
-    echo "Starting WebSphere Liberty Profile using: ${OPENSHIFT_LIBERTY_BIN_DIR}/server start ${OPENSHIFT_LIBERTY_SERVERNAME}"
+    echo "Starting Liberty Profile Profile using: ${OPENSHIFT_LIBERTY_BIN_DIR}/server start ${OPENSHIFT_LIBERTY_SERVERNAME}"
     ${OPENSHIFT_LIBERTY_BIN_DIR}/server start ${OPENSHIFT_LIBERTY_SERVERNAME}
 
     # Trigger initial deployment after profile creation
     touch -cf $OPENSHIFT_LIBERTY_DEPLOYMENT_DIR/ROOT.war
   else
-    echo "WebSphere Liberty already running." 1>&2
+    echo "Liberty Profile already running." 1>&2
   fi
 }
 
@@ -154,7 +154,7 @@ function stop {
         done
       fi
     else
-      echo "WebSphere Liberty already stopped." 1>&2
+      echo "Liberty Profile already stopped." 1>&2
     fi
   fi
 }
@@ -168,9 +168,9 @@ function restart() {
 function status {
   echo '>>> Processing action "STATUS"...'
   if is_running; then
-    client_result "Websphere is running."
+    client_result "Liberty Profile is running."
   else
-    client_result "Websphere is stopped."
+    client_result "Liberty Profile is stopped."
   fi
 
   exit 0

@@ -3,7 +3,7 @@ source $OPENSHIFT_CARTRIDGE_SDK_BASH
 export PATH=${OPENSHIFT_LIBERTY_PROFILE}/bin:$PATH
 export STOPTIMEOUT=10
 
-$cartridge_type="liberty"
+cartridge_type="liberty"
 
 
 function build() {

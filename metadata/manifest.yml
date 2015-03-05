@@ -33,7 +33,7 @@ Subscribes:
     Required: false
 Scaling:
   Min: 1
-  Max: 1
+  Max: -1
 Endpoints:
 - Private-IP-Name: IP
   Private-Port-Name: WC_DEFAULTHOST_PORT

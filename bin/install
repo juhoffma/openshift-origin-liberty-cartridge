@@ -37,7 +37,7 @@ echo "${servername}" > "$OPENSHIFT_LIBERTY_DIR/env/OPENSHIFT_LIBERTY_SERVERNAME"
 admin_console_url="https://${OPENSHIFT_GEAR_DNS}:${OPENSHIFT_LIBERTY_WC_ADMINHOST_SECURE_PROXY_PORT}/ibm/console/logon.jsp"
 
 client_result ""
-client_result "Liberty version: ${version} created."
+client_result "Creating server based on IBM WebSphere Application Server Liberty Core V.${version}..."
 client_result ""
 
 directory_structure=$(ls -laR ${OPENSHIFT_LIBERTY_DIR})

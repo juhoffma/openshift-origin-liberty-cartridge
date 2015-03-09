@@ -123,6 +123,12 @@ function start {
     cp ${OPENSHIFT_REPO_DIR}/.openshift/config/server.xml ${WLP_USER_DIR}/servers/${OPENSHIFT_LIBERTY_SERVERNAME}
   fi
 
+  if [ -d ${OPENSHIFT_REPO_DIR}/.openshift/config/lib ]; then
+    echo "Found a user defined lib in ${OPENSHIFT_REPO_DIR}/.openshift/config/lib directory"
+    echo "Copying its contents to the profile directory"
+    rsync -r --delete --exclude ".*" ${OPENSHIFT_REPO_DIR}/.openshift/config/lib ${WLP_USER_DIR}/servers/${OPENSHIFT_LIBERTY_SERVERNAME}
+  fi
+
   if ! is_running; then
     echo "Starting Liberty Profile Profile using: ${OPENSHIFT_LIBERTY_BIN_DIR}/server start ${OPENSHIFT_LIBERTY_SERVERNAME}"
     ${OPENSHIFT_LIBERTY_BIN_DIR}/server start ${OPENSHIFT_LIBERTY_SERVERNAME}

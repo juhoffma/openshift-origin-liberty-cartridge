@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project activeEnvironment="Default" name="IBM WebSphere Liberty Scaled" resourceRoot="" soapui-version="5.0.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.actions.iface.tools.soapui.LoadTestRunnerAction@values-local"><![CDATA[<xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  <con:entry key="Environment" value="Default"/>
+  <con:entry key="Global Properties" value=""/>
+  <con:entry key="TestSuite" value="TestSuite01"/>
+  <con:entry key="Report to Generate" value=""/>
+  <con:entry key="Password" value=""/>
+  <con:entry key="TestRunner Path" value="/home/openshift/SoapUI-5.0.0/bin"/>
+  <con:entry key="Tool Args" value=""/>
+  <con:entry key="LoadTest" value="LoadTest 1"/>
+  <con:entry key="Host:Port" value=""/>
+  <con:entry key="user-settings.xml Password" value=""/>
+  <con:entry key="WSS Password Type" value=""/>
+  <con:entry key="Save Project" value="false"/>
+  <con:entry key="System Properties" value=""/>
+  <con:entry key="Domain" value=""/>
+  <con:entry key="Open Report" value="false"/>
+  <con:entry key="Project Properties" value=""/>
+  <con:entry key="Print Report Statistics" value="false"/>
+  <con:entry key="Project Password" value=""/>
+  <con:entry key="Report Format(s)" value=""/>
+  <con:entry key="TestCase" value="TestCase01"/>
+  <con:entry key="Username" value=""/>
+  <con:entry key="Root Folder" value=""/>
+  <con:entry key="Add Settings" value="false"/>
+  <con:entry key="Save After" value="false"/>
+  <con:entry key="Endpoint" value=""/>
+  <con:entry key="ThreadCount" value=""/>
+  <con:entry key="Limit" value=""/>
+</xml-fragment>]]></con:setting></con:settings><con:testSuite name="TestSuite01"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="TestCase01" searchProperties="true"><con:settings/><con:testStep type="httprequest" name="Call Example Application"><con:settings/><con:config method="GET" xsi:type="con:HttpRequest" name="Call Example Application" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://libertyscaled-demo.openshift.example.com/health.jsp</con:endpoint><con:request/><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:loadTest name="LoadTest 1"><con:settings><con:setting id="HttpSettings@close-connections">false</con:setting></con:settings><con:threadCount>151</con:threadCount><con:startDelay>0</con:startDelay><con:sampleInterval>250</con:sampleInterval><con:calculateTPSOnTimePassed>true</con:calculateTPSOnTimePassed><con:resetStatisticsOnThreadCountChange>true</con:resetStatisticsOnThreadCountChange><con:historyLimit>-1</con:historyLimit><con:testLimit>60</con:testLimit><con:limitType>TIME</con:limitType><con:loadStrategy><con:type>Burst</con:type><con:config><burstDelay>2000</burstDelay><burstDuration>20000</burstDuration></con:config></con:loadStrategy><con:assertion type="Step Status" name="Step Status"/><con:maxAssertionErrors>100</con:maxAssertionErrors><con:cancelExcessiveThreads>true</con:cancelExcessiveThreads><con:strategyInterval>500</con:strategyInterval></con:loadTest><con:properties/></con:testCase><con:properties/></con:testSuite><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:sensitiveInformation/></con:soapui-project>

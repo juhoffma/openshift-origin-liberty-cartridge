@@ -182,6 +182,25 @@ function status {
   exit 0
 }
 
+function threaddump() { 
+
+  echo "Thread dump for $cartridge_type cartridge" 
+
+  if ! is_running; then 
+        echo "Application is stopped" 
+        exit 1 
+    elif [ -f "$PID_FILE" ]; then 
+        pid=$(cat $PID_FILE); 
+        kill -3 $pid 
+        client_result "Success" 
+        client_result "" 
+        client_result "The thread dump file will be available via: rhc tail $OPENSHIFT_APP_NAME -g $OPENSHIFT_GEAR_UUID -f ${OPENSHIFT_LOG_DIR}console.log -o '-n 250'" 
+    else  
+        echo "Failed to locate Liberty Server PID File" 
+    fi 
+} 
+
+
 case "$1" in
   build)           build ;;
   deploy)          deploy ;;
@@ -189,6 +208,7 @@ case "$1" in
   stop)            stop;;
   status)          status;;
   restart)         restart;;
+  threaddump)      threaddump ;;
 esac
 
 echo '<<<'
